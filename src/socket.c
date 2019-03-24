@@ -16,6 +16,9 @@
 #include <linux/inetdevice.h>
 #include <net/udp_tunnel.h>
 #include <net/ipv6.h>
+#define GCC_VERSION (__GNUC__ * 10000 \
+		    + __GNUC_MINOR__ * 100 \
+		    + __GNUC_PATCHLEVEL__)
 
 static int send4(struct wg_device *wg, struct sk_buff *skb,
 		 struct endpoint *endpoint, u8 ds, struct dst_cache *cache)
@@ -363,7 +366,9 @@ int wg_socket_init(struct wg_device *wg, u16 port)
 	struct socket *new4 = NULL, *new6 = NULL;
 	struct udp_port_cfg port4 = {
 		.family = AF_INET,
+#if GCC_VERSION > 40407
 		.local_ip.s_addr = htonl(INADDR_ANY),
+#endif
 		.local_udp_port = htons(port),
 		.use_udp_checksums = true
 	};
@@ -371,7 +376,9 @@ int wg_socket_init(struct wg_device *wg, u16 port)
 	int retries = 0;
 	struct udp_port_cfg port6 = {
 		.family = AF_INET6,
+#if GCC_VERSION > 40407
 		.local_ip6 = IN6ADDR_ANY_INIT,
+#endif
 		.use_udp6_tx_checksums = true,
 		.use_udp6_rx_checksums = true,
 		.ipv6_v6only = true

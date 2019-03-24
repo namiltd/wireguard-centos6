@@ -19,9 +19,16 @@
 #include <linux/init.h>
 #include <linux/bug.h>
 #include <asm/unaligned.h>
+#define GCC_VERSION (__GNUC__ * 10000 \
+		    + __GNUC_MINOR__ * 100 \
+		    + __GNUC_PATCHLEVEL__)
 
+#if GCC_VERSION > 40407
 typedef union {
 	struct {
+#else
+typedef struct {
+#endif
 		u8 digest_length;
 		u8 key_length;
 		u8 fanout;
@@ -33,8 +40,10 @@ typedef union {
 		u8 inner_length;
 		u8 salt[8];
 		u8 personal[8];
+#if GCC_VERSION > 40407
 	};
 	__le32 words[8];
+#endif
 } __packed blake2s_param;
 
 static const u32 blake2s_iv[8] = {
@@ -74,9 +83,16 @@ static inline void blake2s_init_param(struct blake2s_state *state,
 {
 	int i;
 
+#if GCC_VERSION <= 40407
+	const __le32 *words = (const __le32 *)param;
+#endif
 	memset(state, 0, sizeof(*state));
 	for (i = 0; i < 8; ++i)
+#if GCC_VERSION > 40407
 		state->h[i] = blake2s_iv[i] ^ le32_to_cpu(param->words[i]);
+#else
+		state->h[i] = blake2s_iv[i] ^ le32_to_cpu(words[i]);
+#endif
 }
 
 void blake2s_init(struct blake2s_state *state, const size_t outlen)
