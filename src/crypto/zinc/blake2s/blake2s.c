@@ -74,16 +74,9 @@ static inline void blake2s_init_param(struct blake2s_state *state,
 {
 	int i;
 
-#if GCC_VERSION <= 40407
-	const __le32 *words = (const __le32 *)param;
-#endif
 	memset(state, 0, sizeof(*state));
 	for (i = 0; i < 8; ++i)
-#if GCC_VERSION > 40407
 		state->h[i] = blake2s_iv[i] ^ le32_to_cpu(param->words[i]);
-#else
-		state->h[i] = blake2s_iv[i] ^ le32_to_cpu(words[i]);
-#endif
 }
 
 void blake2s_init(struct blake2s_state *state, const size_t outlen)
