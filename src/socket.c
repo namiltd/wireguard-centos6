@@ -366,7 +366,9 @@ int wg_socket_init(struct wg_device *wg, u16 port)
 	struct socket *new4 = NULL, *new6 = NULL;
 	struct udp_port_cfg port4 = {
 		.family = AF_INET,
-#if GCC_VERSION > 40407
+#if GCC_VERSION == 40407
+		{.local_ip.s_addr = htonl(INADDR_ANY)},
+#else
 		.local_ip.s_addr = htonl(INADDR_ANY),
 #endif
 		.local_udp_port = htons(port),
@@ -376,7 +378,9 @@ int wg_socket_init(struct wg_device *wg, u16 port)
 	int retries = 0;
 	struct udp_port_cfg port6 = {
 		.family = AF_INET6,
-#if GCC_VERSION > 40407
+#if GCC_VERSION == 40407
+		{.local_ip6 = IN6ADDR_ANY_INIT},
+#else
 		.local_ip6 = IN6ADDR_ANY_INIT,
 #endif
 		.use_udp6_tx_checksums = true,
