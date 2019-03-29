@@ -19,16 +19,9 @@
 #include <linux/init.h>
 #include <linux/bug.h>
 #include <asm/unaligned.h>
-#define GCC_VERSION (__GNUC__ * 10000 \
-		    + __GNUC_MINOR__ * 100 \
-		    + __GNUC_PATCHLEVEL__)
 
-#if GCC_VERSION > 40407
 typedef union {
 	struct {
-#else
-typedef struct {
-#endif
 		u8 digest_length;
 		u8 key_length;
 		u8 fanout;
@@ -40,10 +33,8 @@ typedef struct {
 		u8 inner_length;
 		u8 salt[8];
 		u8 personal[8];
-#if GCC_VERSION > 40407
 	};
 	__le32 words[8];
-#endif
 } __packed blake2s_param;
 
 static const u32 blake2s_iv[8] = {
