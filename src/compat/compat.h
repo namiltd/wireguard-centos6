@@ -388,25 +388,25 @@ static inline int get_random_bytes_wait(void *buf, int nbytes)
 #define system_power_efficient_wq system_unbound_wq
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0) && !defined(ISRHEL7)
-#include <linux/hrtimer.h>
-static inline u64 ktime_get_boot_ns(void)
-{
-	return ktime_to_ns(ktime_get_boottime());
-}
-#endif
-
-#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 3, 0)
+#include <linux/ktime.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
 #include <linux/hrtimer.h>
 #else
 #include <linux/timekeeping.h>
 #endif
-static inline u64 __compat_ktime_get_boot_fast_ns(void)
+static inline u64 ktime_get_coarse_boottime_ns(void)
 {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
+	return ktime_to_ns(ktime_get_boottime());
+#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
 	return ktime_get_boot_ns();
+#elif (LINUX_VERSION_CODE < KERNEL_VERSION(5, 1, 12) && LINUX_VERSION_CODE >= KERNEL_VERSION(4, 20, 0)) || LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 53)
+	return ktime_get_boot_fast_ns();
+#else
+	return ktime_to_ns(ktime_get_coarse_boottime());
+#endif
 }
-#define ktime_get_boot_fast_ns __compat_ktime_get_boot_fast_ns
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0)
