@@ -408,6 +408,15 @@ static inline u64 __wgcompat_ktime_get_boot_fast_ns(void)
 #define ktime_get_boot_fast_ns __wgcompat_ktime_get_boot_fast_ns
 #endif
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 1, 12) && LINUX_VERSION_CODE >= KERNEL_VERSION(4, 20, 0)) || LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 53)
+#include <linux/ktime.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 17, 0)
+#include <linux/timekeeping.h>
+#endif
+/* This function exists in earlier versions, but the sub-seconds portion is always zero until 5.2 and backports to 5.1 and 4.19. */
+#define ktime_get_coarse_boottime ktime_get_boot_fast_ns
+#endif
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 14, 0)
 #include <linux/inetdevice.h>
 static inline __be32 our_confirm_addr_indev(struct in_device *in_dev, __be32 dst,  __be32 local, int scope)
