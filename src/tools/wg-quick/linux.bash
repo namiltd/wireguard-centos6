@@ -190,7 +190,7 @@ remove_iptables() {
 			[[ $line == "-A"* ]] && found=1
 			printf -v restore '%s\n%s' "$restore" "${line/#-A/-D}"
 		done < <($iptables-save)
-		[[ $found -eq 1 ]] && echo "$restore" | cmd $iptables-restore -nw
+		[[ $found -ne 1 ]] || echo "$restore" | cmd $iptables-restore -n
 	done
 }
 
@@ -199,7 +199,7 @@ add_default() {
 	local table proto i iptables
 	if ! get_fwmark table; then
 		table=51820
-		while [[ -n $(ip -4 route show table $table) || -n $(ip -6 route show table $table) ]]; do
+		while [[ -n $(ip -4 route show table $table 2>/dev/null) || -n $(ip -6 route show table $table 2>/dev/null) ]]; do
 			((table++))
 		done
 		cmd wg set "$INTERFACE" fwmark $table
@@ -217,7 +217,7 @@ add_default() {
 	done
 	printf -v restore '%s\nCOMMIT\n*mangle\n-I POSTROUTING -m mark --mark %d -p udp -j CONNMARK --save-mark %s\n-I PREROUTING -p udp -j CONNMARK --restore-mark %s\nCOMMIT\n' "$restore" $table "$marker" "$marker"
 	[[ $proto == -4 ]] && cmd sysctl -q net.ipv4.conf.all.src_valid_mark=1
-	echo "$restore" | cmd $iptables-restore -nw
+	echo "$restore" | cmd $iptables-restore -n
 	HAVE_SET_IPTABLES=1
 	return 0
 }
@@ -322,8 +322,8 @@ cmd_down() {
 	execute_hooks "${PRE_DOWN[@]}"
 	[[ $SAVE_CONFIG -eq 0 ]] || save_config
 	del_if
-	unset_dns
-	remove_iptables
+	unset_dns || true
+	remove_iptables || true
 	execute_hooks "${POST_DOWN[@]}"
 }
 
