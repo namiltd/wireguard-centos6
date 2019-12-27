@@ -1,0 +1,9 @@
+diff -ruN master/src/dkms.conf master-centos6/src/dkms.conf
+--- master/src/dkms.conf	2019-12-27 09:35:39.000000000 +0100
++++ master-centos6/src/dkms.conf	2019-12-27 07:35:23.000000000 +0100
+@@ -7,3 +7,5 @@
+ 
+ # requires kernel 3.10 - 5.5, inclusive:
+ BUILD_EXCLUSIVE_KERNEL="^((5\.[0-5]($|[.-]))|(4\.)|(3\.1[0-9]))"
++
++NO_WEAK_MODULES="true"

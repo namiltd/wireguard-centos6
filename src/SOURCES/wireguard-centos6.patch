@@ -1,0 +1,37 @@
+diff -ruN master/src/socket.c master-centos6/src/socket.c
+--- master/src/socket.c	2019-03-29 15:10:20.000000000 +0100
++++ master-centos6/src/socket.c	2019-03-29 15:10:31.000000000 +0100
+@@ -16,6 +16,9 @@
+ #include <linux/inetdevice.h>
+ #include <net/udp_tunnel.h>
+ #include <net/ipv6.h>
++#define GCC_VERSION (__GNUC__ * 10000 \
++		    + __GNUC_MINOR__ * 100 \
++		    + __GNUC_PATCHLEVEL__)
+ 
+ static int send4(struct wg_device *wg, struct sk_buff *skb,
+ 		 struct endpoint *endpoint, u8 ds, struct dst_cache *cache)
+@@ -363,7 +366,11 @@
+ 	struct socket *new4 = NULL, *new6 = NULL;
+ 	struct udp_port_cfg port4 = {
+ 		.family = AF_INET,
++#if GCC_VERSION == 40407
++		{.local_ip.s_addr = htonl(INADDR_ANY)},
++#else
+ 		.local_ip.s_addr = htonl(INADDR_ANY),
++#endif
+ 		.local_udp_port = htons(port),
+ 		.use_udp_checksums = true
+ 	};
+@@ -371,7 +378,11 @@
+ 	int retries = 0;
+ 	struct udp_port_cfg port6 = {
+ 		.family = AF_INET6,
++#if GCC_VERSION == 40407
++		{.local_ip6 = IN6ADDR_ANY_INIT},
++#else
+ 		.local_ip6 = IN6ADDR_ANY_INIT,
++#endif
+ 		.use_udp6_tx_checksums = true,
+ 		.use_udp6_rx_checksums = true,
+ 		.ipv6_v6only = true
