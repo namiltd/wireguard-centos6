@@ -1,4 +1,5 @@
 %define realname WireGuard
+%define shortname wireguard
 %define realver  1.0.20191226
 %define srcext   tar.xz
 
@@ -6,7 +7,7 @@
 %global debug_package %{nil}
 
 # Common info
-Name:          wireguard
+Name:          wireguard-tools
 Version:       %{realver}
 Release:       2.0centos6%{?dist}
 License:       GPL-2.0
@@ -20,7 +21,7 @@ BuildRequires: pkgconfig
 BuildRequires: xz
 BuildRequires: pkgconfig(libmnl)
 BuildRoot:     %{_tmppath}/%{name}-root
-Source:        https://git.zx2c4.com/wireguard-tools/snapshot/%{name}-tools-%{realver}%{?extraver}.%{srcext}
+Source:        https://git.zx2c4.com/wireguard-tools/snapshot/%{name}-%{realver}%{?extraver}.%{srcext}
 
 %description
 WireGuard is a novel VPN that runs inside the Linux Kernel and utilizes
@@ -32,7 +33,7 @@ for many different circumstances. It runs over UDP.
 
 # Preparation step (unpackung and patching if necessary)
 %prep
-%setup -q -n %{name}-tools-%{realver}%{?extraver}
+%setup -q -n %{name}-%{realver}%{?extraver}
 
 %build
 %{__make} -C src %{?_smp_mflags} \
@@ -57,7 +58,7 @@ for many different circumstances. It runs over UDP.
 %files
 %defattr(-,root,root)
 %doc COPYING README.md
-%dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{shortname}
 %{_bindir}/*
 %{_datadir}/bash-completion/completions/wg*
 %if 0%{?_unitdir:1}
