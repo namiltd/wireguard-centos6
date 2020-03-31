@@ -1,6 +1,6 @@
 %define realname WireGuard
 %define shortname wireguard
-%define realver  1.0.20200330
+%define realver  1.0.20200319
 %define srcext   tar.xz
 
 # turn off the generation of debuginfo rpm  (RH9) ??
@@ -67,8 +67,6 @@ for many different circumstances. It runs over UDP.
 %doc %{_mandir}/man8/*
 
 %changelog
-* Tue Mar 31 2020 MietekN <namiltd@yahoo.com>
-- New upstream version - snapshot 20200330
 * Fri Mar 20 2020 MietekN <namiltd@yahoo.com>
 - New upstream version - snapshot 20200319
 * Fri Feb 07 2020 MietekN <namiltd@yahoo.com>
