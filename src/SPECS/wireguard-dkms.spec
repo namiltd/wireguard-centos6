@@ -89,7 +89,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
-* wed Apr 15 2020 MietekN <namiltd@yahoo.com>
+* Wed Apr 15 2020 MietekN <namiltd@yahoo.com>
 - New upstream version - snapshot 20200413
 * Thu Apr 02 2020 MietekN <namiltd@yahoo.com>
 - New upstream version - snapshot 20200401
