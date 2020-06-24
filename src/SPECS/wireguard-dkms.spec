@@ -1,6 +1,6 @@
 %define realname WireGuard
 %define shortname wireguard
-%define realver  1.0.20200611
+%define realver  1.0.20200623
 %define srcext   tar.xz
 
 # turn off the generation of debuginfo rpm  (RH9) ??
@@ -89,6 +89,8 @@ if [ $1 -eq 0 ]; then
 fi
 
 %changelog
+* Wed Jun 24 2020 MietekN <namiltd@yahoo.com>
+- New upstream version - snapshot 20200623
 * Thu Jun 11 2020 MietekN <namiltd@yahoo.com>
 - New upstream version - snapshot 20200611
 * Thu May 21 2020 MietekN <namiltd@yahoo.com>
