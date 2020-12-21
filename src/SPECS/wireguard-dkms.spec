@@ -1,6 +1,6 @@
 %define realname WireGuard
 %define shortname wireguard
-%define realver  1.0.20201211
+%define realver  1.0.20201221
 %define srcext   tar.xz
 
 # turn off the generation of debuginfo rpm  (RH9) ??
